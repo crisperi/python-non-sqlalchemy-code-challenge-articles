@@ -1,4 +1,5 @@
 class Article:
+    all = []
     def __init__(self, author, magazine, title):
         if not isinstance(title, str):
             raise ValueError("Title must be a string.")
@@ -9,7 +10,8 @@ class Article:
         self.author = author
         self.magazine = magazine
         self._title = title
-    
+        Article.all.append(self)
+        
     @property
     def title(self):
         return self._title
@@ -21,39 +23,38 @@ class Article:
         
 class Author:
     def __init__(self, name):
-        self.name = name
+        if not isinstance(name, str):
+            raise ValueError("Name must be a string.")
+
+        if len(name) == 0:
+            raise ValueError("name cannot be empty")
+        self._name = name
+        self._articles = []
+        
         
      
     @property
     def name(self):
         return self._name 
     
-    @name.setter
-    def name(self, name):
-        if hasattr(self, '_name'):
-            raise ValueError("Name already set.")
-       
-        if not isinstance(name, str):
-            raise ValueError("Name must be a string.")
-
-        if len(name) == 0:
-            raise ValueError("name cannot be empty")
-
-        self._name = name
     
-
-
     def articles(self):
-        pass
+        return self._articles
+
 
     def magazines(self):
-        pass
+        return [article.magazine for article in self._articles]
+
 
     def add_article(self, magazine, title):
-        pass
+        article = Article(self, magazine, title)
+        self._articles.append(article)
+        return article
+
 
     def topic_areas(self):
-        pass
+        return list(set(magazine.category for magazine in self.magazines()))
+
 
 class Magazine:
     def __init__(self, name, category):
@@ -75,7 +76,8 @@ class Magazine:
         
     
     def articles(self):
-        pass
+        return self._articles
+    
 
     def contributors(self):
         pass
